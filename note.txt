@@ -1,3 +1,7 @@
-POSTMAN_URL =  https://documenter.getpostman.com/view/22792855/2s93sW8vPZ
-GITHUB LINK = 
-LIVE LINK = 
+POSTMAN URL =  https://documenter.getpostman.com/view/22792855/2s93shzV5u
+
+GITHUB LINK = https://github.com/sariothossain1011/assignment03.git
+
+BACKEND LINK = https://super-shop-backend.vercel.app/api/v1
+
+LIVE LINK = https://super-shop-sariot.vercel.app/

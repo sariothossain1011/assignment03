@@ -6,7 +6,7 @@ const { processPayment, orderStatus, getOrders, allOrders, getToken } = require(
 const router = express.Router()
 
 router.post("/braintree/payment", processPayment);
-router.get("/braintree/token", getToken);
+router.get("/", getToken);
 router.get("/getOrders", getOrders);
 router.get("/allOrders", Authentication, allOrders);
 router.post("/orderStatus/:orderId", Authentication, orderStatus);
