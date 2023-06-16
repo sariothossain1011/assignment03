@@ -5,11 +5,23 @@ class SessionHelper{
     getToken(){
         return localStorage.getItem("token")
     }
+    removeToken(){
+        return localStorage.removeItem("token")
+    }
     setUserDetails(UserDetails){
         localStorage.setItem("UserDetails",JSON.stringify(UserDetails))
     }
     getUserDetails(){
         return JSON.parse(localStorage.getItem("UserDetails"))
+    }
+    setCartData(cart){
+        localStorage.setItem("cart",JSON.stringify(cart))
+    }
+    getCartData(){
+        return JSON.parse(localStorage.getItem("cart"))
+    }
+    removeCartData(){
+        return localStorage.removeItem("cart")
     }
     setEmail(Email){
         localStorage.setItem("Email",Email)
@@ -17,9 +29,6 @@ class SessionHelper{
     getEmail(){
         return localStorage.getItem("Email")
     }
-    removeSessions=()=>{
-        localStorage.clear();
-        window.location.href="/Login"
-    }
+
 }
-export const {setEmail,getEmail,setToken,getToken,setUserDetails,getUserDetails,removeSessions}=new SessionHelper();
+export const {setEmail,getEmail,setToken,getToken,removeToken,getCartData,removeCartData,setCartData,setUserDetails,getUserDetails}=new SessionHelper();

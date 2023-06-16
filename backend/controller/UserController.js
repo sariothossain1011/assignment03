@@ -1,5 +1,9 @@
 const { HashPassword, ComparePassword } = require("../helper/PasswordHash");
-const UsersModel = require("../models/UsersModel");
+
+const UserModel = require("../models/UserModel");
+
+const { deleteService } = require("../services/DeleteService");
+const { FindService } = require("../services/FindService");
 const { CreateToken } = require("../utility/CreateToken");
 
 exports.register = async (req, res) => {
@@ -25,7 +29,7 @@ exports.register = async (req, res) => {
       });
     }
 
-    const existingUser = await UsersModel.findOne({ email });
+    const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res
         .status(400)
@@ -34,7 +38,7 @@ exports.register = async (req, res) => {
 
     const hashPassword = await HashPassword(password);
 
-    const data = await new UsersModel({
+    const data = await new UserModel({
       name,
       email,
       password: hashPassword,
@@ -67,7 +71,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    const data = await UsersModel.findOne({ email });
+    const data = await UserModel.findOne({ email });
     if (!data) {
       res.status(400).json({ status: "fail", message: "User not found!" });
     }
@@ -80,7 +84,7 @@ exports.login = async (req, res) => {
         .json({ status: "fail", message: "Wrong password !" });
     }
 
-    const token = await CreateToken(data["email"]);
+    const token = await CreateToken({_id:data._id});
     const { password: removedPassword, ...responseData } = data.toObject();
     res
       .status(200)
@@ -91,11 +95,53 @@ exports.login = async (req, res) => {
 };
 
 
-exports.find = async (req, res) => {
+exports.findUser = async (req, res) => {
   try {
-    const data = await UsersModel.find({email:req.user}).select("-password");
+    const data = await UserModel.findById({_id:req.userId}).select("-password");
     res.status(200).json({ status: "success", data: data });
   } catch (error) {
     res.status(400).json({ status: "fail", data: error.toString() });
   }
+};
+
+exports.updateUser = async (req, res) => {
+  try {
+    const { name, password } = req.body;
+    const data = await UserModel.findById(req.userId);
+    
+   
+    // check password length
+    if (password && password.length < 6) {
+      return res.json({
+        error: "Password is required and should be min 6 characters long",
+      });
+    }
+    // hash the password
+    const hashPassword = await HashPassword(password);
+
+    const updatedData = await UserModel.findByIdAndUpdate(
+      req.userId,
+      {
+        name: name || data.name,
+        password: hashPassword || data.password,
+        
+      },
+      { new: true } 
+    );
+
+    if (!updatedData) {
+      res.status(400).json({ status: "fail", message: "update fail" });
+    }
+
+    const { password: removedPassword, ...responseData } = updatedData.toObject();
+
+    res.status(200).json({ status: "success", data: responseData });
+  } catch (error) {
+    res.status(400).json({ status: "fail", data: error.toString() });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  const data = await deleteService(req, UserModel);
+  return res.status(200).json(data);
 };

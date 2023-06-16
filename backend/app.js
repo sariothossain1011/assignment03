@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const { readdirSync } = require("fs");
 const dotenv = require('dotenv');
-
+const path = require("path");
 require("./db/conn");
 dotenv.config({path:'./config.env'});
 
@@ -10,6 +10,7 @@ dotenv.config({path:'./config.env'});
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const helmet = require('helmet');
+const morgan = require("morgan");
 const xssClean = require('xss-clean');
 const expressMongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
@@ -18,8 +19,9 @@ const ErrorHandler = require("./middleware/ErrorHandler");
 
 // security middleware implement
 app.use(cors());
-app.use(bodyParser.json())
-app.use(express.json())
+app.use(bodyParser.json());
+app.use(morgan("dev"));
+app.use(express.json());
 app.use(xssClean());
 app.use(expressMongoSanitize());
 app.use(helmet());

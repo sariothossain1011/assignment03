@@ -1,37 +1,34 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import LoginPage from "./pages/LoginPage";
-import RegistrationPage from "./pages/RegistrationPage";
-import NotFound from "./pages/NotFound";
-import HomePage from "./pages/HomePage";
-import { getToken } from "./helper/SessionHelper";
+import NotFoundPage from "./pages/users/NotFoundPage";
+import HomePage from "./pages/users/HomePage";
+import RegistrationPage from "./pages/auth/RegistrationPage";
+import LoginPage from "./pages/auth/LoginPage";
 import MasterLayout from "./components/masterLayout/MasterLayout";
+import ProductPage from "./pages/users/ProductPage";
+import CartPage from "./pages/users/CartPage";
+import OrderPage from "./pages/users/OrderPage";
+
 const App = () => {
-  if(getToken()){
-    return (
-      <BrowserRouter>
-        <Toaster />
-        <Routes>
-          <Route exact path="/" element={<HomePage />} />
-          <Route exact path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    );
-  }else{
-    return (
-      <BrowserRouter>
-        <Toaster />
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route exact path="/login" element={<LoginPage />} />
-          <Route exact path="/register" element={<RegistrationPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    );
-  }
-  
+
+  return (
+    <BrowserRouter>
+      <Toaster />
+      <MasterLayout/>
+      <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/order" element={<OrderPage />} />
+      <Route path="/cart" element={<CartPage />} />
+      <Route path="/product/:id" element={<ProductPage />} />
+      <Route path="/registration" element={<RegistrationPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="*" element={<NotFoundPage />} />
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 export default App;
